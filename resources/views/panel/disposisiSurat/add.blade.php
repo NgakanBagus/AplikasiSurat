@@ -1,51 +1,55 @@
-@extends('panel.layouts.app')
+@extends(('panel.layouts.app'))
 
 @section('content')
+
 <div class="pagetitle">
-    <h1>Tambah Disposisi Surat</h1>
-</div>
+  <h1>Disposisi Surat</h1>
+</div><!-- End Page Title -->
+
 <section class="section">
-    <div class="row">
-        <div class="col-lg-12">
-            @include('_message')
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Form Tambah Disposisi Surat</h5>
-                    <form action="{{ url('panel/disposisiSurat/store') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="form-group">
-                            <label for="surat_id">Surat Eksternal</label>
-                            <select class="form-control" id="surat_id" name="surat_id">
-                                @foreach ($suratEksternal as $surat)
-                                    <option value="{{ $surat->id }}">{{ $surat->judul_surat }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="catatan">Catatan</label>
-                            <textarea class="form-control" id="catatan" name="catatan" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="roles_ids">Pilih Role Tujuan</label>
-                            <select class="form-control" id="roles_ids" name="roles_ids[]" multiple>
-                                @foreach ($roles as $role)
-                                    <option value="{{ $role->id }}">{{ $role->role_name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="status">Status</label>
-                            <select class="form-control" id="status" name="status">
-                                <option value="Belum Dibaca">Belum Dibaca</option>
-                                <option value="Sedang Dikerjakan">Sedang Dikerjakan</option>
-                                <option value="Sudah Dikerjakan">Sudah Dikerjakan</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Tambah</button>
-                    </form>
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <!-- General Form Elements -->
+              <form action="" method="POST" enctype="multipart/form-data">
+              {{ csrf_field() }}
+                <div class="row my-3">
+                  <label for="surat_eksternal" class="col-sm-12 col-form-label">Surat Eksternal</label>
+                  <div class="col-sm-12">
+                    <select class="form-control" name="surat_id" id="surat_eksternal" required>
+                      <option value="">Pilih Surat Eksternal</option>
+                      @foreach($suratEksternal as $value)
+                      <option {{ (old('surat_id') == $value->id) ? 'selected' : '' }} value="{{ $value->id }}">{{ $value->judul_surat }}</option>
+                      @endforeach
+                    </select>
+                  </div>
                 </div>
+                <div class="row my-3">
+                  <label for="roles" class="col-sm-12 col-form-label">Role Tujuan</label>
+                  <div class="col-sm-12">
+                    <select class="form-select" multiple name="roles_ids[]" id="roles" required>
+                      @foreach($roles as $value)
+                      <option {{ (old('roles_ids') == $value->id) ? 'selected' : '' }} value="{{ $value->id }}">{{ $value->name }}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                </div>
+                <div class="row my-3">
+                  <label for="catatan" class="col-sm-2 col-form-label">Catatan</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="catatan" id="catatan" required>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-sm-12" style="text-align: right">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </div>
+                </div>
+              </form><!-- End General Form Elements -->
             </div>
+          </div>
         </div>
-    </div>
-</section>
+    </section>
+
 @endsection

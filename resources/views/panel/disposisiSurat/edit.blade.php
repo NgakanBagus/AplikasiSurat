@@ -15,18 +15,23 @@
                     <form action="{{ url('panel/disposisiSurat/edit/' . $disposisiSurat->id) }}" method="post" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
+
                         <div class="mb-3">
                             <label for="surat_id" class="form-label">Judul Surat</label>
                             <select class="form-control" id="surat_id" name="surat_id">
                                 @foreach ($suratEksternal as $surat)
-                                    <option value="{{ $surat->id }}" {{ $disposisiSurat->surat_id == $surat->id ? 'selected' : '' }}>{{ $surat->judul_surat }}</option>
+                                    <option value="{{ $surat->id }}" {{ $disposisiSurat->surat_id == $surat->id ? 'selected' : '' }}>
+                                        {{ $surat->judul_surat }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
+
                         <div class="mb-3">
                             <label for="catatan" class="form-label">Catatan</label>
                             <textarea class="form-control" id="catatan" name="catatan">{{ $disposisiSurat->catatan }}</textarea>
                         </div>
+
                         <div class="mb-3">
                             <label for="status" class="form-label">Status</label>
                             <select class="form-control" id="status" name="status">
@@ -36,6 +41,7 @@
                                 <option value="Sudah Dibaca" {{ $disposisiSurat->status == 'Sudah Dibaca' ? 'selected' : '' }}>Sudah Dibaca</option>
                             </select>
                         </div>
+
                         <div class="mb-3">
                             <label for="file" class="form-label">File (optional)</label>
                             <input class="form-control" type="file" id="file" name="file">
@@ -43,6 +49,7 @@
                                 <a href="{{ asset($disposisiSurat->file_path) }}" target="_blank">View current file</a>
                             @endif
                         </div>
+
                         <div class="mb-3">
                             <label for="roles" class="form-label">Role Tujuan</label>
                             <select class="form-control" id="roles" name="roles_ids[]" multiple>
@@ -54,6 +61,7 @@
                                 @endforeach
                             </select>
                         </div>
+
                         <button type="submit" class="btn btn-primary">Save</button>
                     </form>
                 </div>

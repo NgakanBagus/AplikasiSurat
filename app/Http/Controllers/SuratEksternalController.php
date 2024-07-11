@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\SuratEksternal;
 use Illuminate\Support\Facades\Auth;
 use App\Models\RoleHasPermissionModel;
+use App\Models\RoleModel;
 
 class SuratEksternalController extends Controller
 {
@@ -26,13 +27,15 @@ class SuratEksternalController extends Controller
 
     public function showAddForm() {
         $PermissionRoles = RoleHasPermissionModel::getPermission('Add Surat Eksternal', Auth::user()->role_id);
-        if(empty($PermissionRoles))
-        {
+        if(empty($PermissionRoles)) {
             abort(401);
         }
-
-        return view('panel.suratEksternal.add');
+    
+        $roles = RoleModel::all(); // Adjust this to fetch your roles data
+    
+        return view('panel.suratEksternal.add', ['roles' => $roles]);
     }
+    
 
     public function store(Request $request)
     {

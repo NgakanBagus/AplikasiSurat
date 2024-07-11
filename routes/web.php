@@ -52,8 +52,10 @@ Route::group(['middleware' => 'useradmin'], function() {
     Route::post('panel/disposisiSurat/add', [DisposisiSuratController::class, 'store']);
     Route::get('panel/disposisiSurat/delete/{id}', [DisposisiSuratController::class, 'delete']);
     Route::get('panel/disposisiSurat/edit/{id}', [DisposisiSuratController::class, 'showEditForm']);
-    Route::post('panel/disposisiSurat/edit/{id}', [DisposisiSuratController::class, 'edit']);
-    Route::put('panel/disposisiSurat/{id}/update', [DisposisiSuratController::class, 'edit'])->name('disposisiSurat.update');
+    Route::get('panel/disposisiSurat/edit/{id}', [DisposisiSuratController::class, 'showEditForm'])->name('panel.disposisiSurat.edit');
+    Route::put('panel/disposisiSurat/edit/{id}', [DisposisiSuratController::class, 'edit'])->name('panel.disposisiSurat.update');
+
+    Route::get('panel/disposisiSurat', [DisposisiSuratController::class, 'showAll'])->name('panel.disposisiSurat');
 
     Route::post('panel/disposisiSurat/updateStatus/{id}', [DisposisiSuratController::class, 'updateStatus'])->name('disposisiSurat.updateStatus');
 

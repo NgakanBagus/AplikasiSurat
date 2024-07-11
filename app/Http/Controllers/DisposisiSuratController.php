@@ -36,18 +36,22 @@ class DisposisiSuratController extends Controller
 
     public function showAddForm() {
         $PermissionRoles = RoleHasPermissionModel::getPermission('Add Disposisi', Auth::user()->role_id);
-        if(empty($PermissionRoles)) {
+        if (empty($PermissionRoles)) {
             abort(401);
         }
-
+        
         $suratTerdisposisi = DisposisiSurat::pluck('surat_id');
         $suratEksternal = SuratEksternal::whereNotIn('id', $suratTerdisposisi)->get();
-        $roles = RoleModel::getRecord();
-
-        return view('panel.disposisiSurat.add', ['suratEksternal' => $suratEksternal, 'roles' => $roles]);
+        $roles = RoleModel::all(); // Fetch all roles
+        
+        return view('panel.disposisiSurat.add', [
+            'suratEksternal' => $suratEksternal,
+            'roles' => $roles
+        ]);
     }
-
-    public function showEditForm($id) {
+    
+    public function showEditForm($id)
+    {
         $PermissionRoles = RoleHasPermissionModel::getPermission('Edit Disposisi', Auth::user()->role_id);
         if (empty($PermissionRoles)) {
             abort(401);
@@ -60,7 +64,9 @@ class DisposisiSuratController extends Controller
         return view('panel.disposisiSurat.edit', compact('disposisiSurat', 'suratEksternal', 'roles'));
     }
 
-    public function edit(Request $request, $id) {
+
+    public function edit(Request $request, $id)
+    {
         $PermissionRoles = RoleHasPermissionModel::getPermission('Edit Disposisi', Auth::user()->role_id);
         if (empty($PermissionRoles)) {
             abort(401);
@@ -69,8 +75,9 @@ class DisposisiSuratController extends Controller
         $request->validate([
             'catatan' => 'required',
             'surat_id' => 'required',
+            'roles_ids' => 'required|array',
+            'roles_ids.*' => 'integer',
             'file' => 'nullable|mimes:pdf|max:2048',
-            'status' => 'required|in:Belum Dibaca,Sedang Dikerjakan,Sudah Dikerjakan',
         ]);
 
         $disposisiSurat = DisposisiSurat::findOrFail($id);
@@ -87,29 +94,29 @@ class DisposisiSuratController extends Controller
 
         $disposisiSurat->save();
 
+        // Sync the roles
+        $disposisiSurat->roleDestination()->sync($request->roles_ids);
+
         return redirect()->route('panel.disposisiSurat')->with('success', 'Disposisi surat berhasil diedit');
     }
 
+
     public function store(Request $request) {
         $PermissionRoles = RoleHasPermissionModel::getPermission('Add Disposisi', Auth::user()->role_id);
-        if(empty($PermissionRoles)) {
+        if(empty($PermissionRoles))
+        {
             abort(401);
         }
-
-        $request->validate([
-            'catatan' => 'required',
-            'surat_id' => 'required',
-            'status' => 'required|in:Belum Dibaca,Sedang Dikerjakan,Sudah Dikerjakan',
-        ]);
 
         $disposisiSurat = new DisposisiSurat();
         $disposisiSurat->catatan = $request->catatan;
         $disposisiSurat->surat_id = $request->surat_id;
-        $disposisiSurat->status = $request->status;
+        $disposisiSurat->status = "Belum Dibaca";
         
         $disposisiSurat->save();
         
         $disposisiSurat->roleDestination()->attach($request->roles_ids);
+        // dd($disposisiSurat->id);
         
         return redirect('panel/disposisiSurat')->with('success', "Disposisi surat berhasil dibuat");
     }

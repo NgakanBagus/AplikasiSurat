@@ -17,11 +17,10 @@ return new class extends Migration
             $table->unsignedBigInteger('role_id');
             $table->timestamps();
 
-            $table->foreign('disposisi_id')->references('id')->on('disposisi_surat');
-            $table->foreign('role_id')->references('id')->on('roles');
+            $table->foreign('disposisi_id')->references('id')->on('disposisi_surat')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on('roles')->onUpdate('cascade')->onDelete('cascade');
         });
     }
-
     /**
      * Reverse the migrations.
      */
